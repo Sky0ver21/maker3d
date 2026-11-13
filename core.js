@@ -196,3 +196,7 @@ const tag=(t,c)=>'<span class="tag '+(c||'')+'">'+t+'</span>';
 const chipsHtml=(name,opts,def,key)=>'<div class="chips">'+opts.map(([v,l])=>'<label class="chip"><input type="radio" name="'+name+'" value="'+esc(v)+'" '+(String(v)===String(def)?'checked':'')+' onchange="dset(&quot;'+key+'&quot;,&quot;'+esc(v)+'&quot;)">'+l+'</label>').join('')+'</div>';
 const stars=n=>'★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n));
 function go(path){if(location.hash==='#'+path)render();else location.hash=path}
+
+/* modo: SITE (desktop) ou APP (celular / janela de app ?app=1) */
+let FORCE_SITE=null;const APP_FORCED=/[?&](app|embed)(=|&|$)/.test(location.search);
+const isSite=()=>FORCE_SITE!==null?FORCE_SITE:(!APP_FORCED&&innerWidth>=900);

@@ -6,9 +6,10 @@ localStorage.removeItem(KEY);load();
 const G={c:['/c/inicio','/c/novo','/c/pedidos','/c/pedido/o1','/c/pedido/o3','/c/chat','/c/chat/o3_m2','/c/contatos','/c/conta','/c/notificacoes'],
  m:['/m/mural','/m/pedido/o4','/m/pedido/o2','/m/contratos','/m/chat','/m/chat/o3_m2','/m/contatos','/m/carteira','/m/perfil','/m/painel','/m/calculadora','/m/conta','/m/notificacoes'],
  a:['/a/painel','/a/simulador','/a/pitch','/a/moderacao'],pub:['/','/entrar','/cadastro/cliente','/cadastro/maker','/ajuda']};
-[['c1','c'],['c2','c'],['m1','m'],['m2','m'],['a1','a'],[null,'pub']].forEach(([id,g])=>{S.session=id;G[g].forEach(p=>t((id||'pub')+' '+p,()=>{const r=resolve(p,me());if(r.redirect)throw new Error('redirect '+r.redirect);
-  if(!r.html||r.html.length<20)throw new Error('vazio');const m=r.html.match(/.{0,25}(undefined|NaN|\[object|null).{0,25}/);if(m)throw new Error('texto ruim: '+m[0])}))});
+[false,true].forEach(site=>[['c1','c'],['c2','c'],['m1','m'],['m2','m'],['a1','a'],[null,'pub']].forEach(([id,g])=>{FORCE_SITE=site;S.session=id;G[g].forEach(p=>t((site?'SITE ':'APP ')+(id||'pub')+' '+p,()=>{const r=resolve(p,me());if(r.redirect)throw new Error('redirect '+r.redirect);
+  if(!r.html||r.html.length<20)throw new Error('vazio');const m=r.html.match(/.{0,25}(undefined|NaN|\[object|null).{0,25}/);if(m)throw new Error('texto ruim: '+m[0])}))}));FORCE_SITE=null;
 ['c1','c2','m1','m2','a1',null].forEach(id=>t('chrome '+id,()=>{S.session=id;const u=me();header(u);bar(u,'/x');sidePanel();if(u)menu();closeModal();demoMenu();closeModal();location.hash='#'+(u?homeOf(u):'/');render();if(!$('#app'))throw new Error('sem app')}));
+FORCE_SITE=true;['c1','m2',null,'a1'].forEach(id=>t('chrome site '+id,()=>{S.session=id;location.hash='#/';render();const u=me();if(u)location.hash='#'+homeOf(u);render();if(!$('#bar'))throw new Error('sem bar')}));FORCE_SITE=null;
 S.session='m1';
 t('estimativa 100g PLA 5h',()=>{const e=estimate({mat:'PLA',grams:100,hours:5,cx:.5});eq(e.cost.toFixed(2),'23.75');eq(e.min.toFixed(2),'35.63');eq(e.max.toFixed(2),'59.38')});
 t('cep Campinas e fora de SP',()=>{eq(cepCity('13015-000').city,'Campinas');if(!cepCity('20000-000').out)throw new Error('deveria ser fora')});

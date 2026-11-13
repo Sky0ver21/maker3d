@@ -4,7 +4,7 @@ function loginAs(id){S.session=id;save();const u=U(id);go(homeOf(u))}
 function logout(){closeModal();S.session=null;save();go('/')}
 const typeLabel=u=>u.type==='admin'?'Painel do investidor':u.type==='maker'?'Maker '+(u.mk.makerType==='modelador'?'modelador':u.mk.segment==='empresas'?'· Empresas':u.mk.segment==='ambos'?'· Ambos':'· Comercial'):(u.kind==='empresa'?'Cliente Empresa':'Cliente Pessoa Física');
 
-function viewHome(){const U1=CFG.unlock.comercial,U2=CFG.unlock.empresas;
+function viewHome(){if(isSite())return viewSiteHome();const U1=CFG.unlock.comercial,U2=CFG.unlock.empresas;
 return `<div class="hero"><span class="tag">100% grátis para quem pede</span><h1>Sua peça 3D,<br><span>do maker certo</span></h1><p>Mande uma foto e quanto quer pagar. A gente conecta você ao maker ideal, perto de você.</p>
 <div class="col"><button class="b big" onclick="go('/cadastro/cliente')">Pedir minha peça grátis</button><button class="b big w" onclick="go('/cadastro/maker')">Sou maker, quero pedidos</button><button class="b s" onclick="startTour()">▶ Ver demonstração guiada</button></div></div>
 <div class="card"><h3 style="margin-top:0">Como funciona</h3>
