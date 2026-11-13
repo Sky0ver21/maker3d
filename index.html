@@ -2,242 +2,27 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0f">
+<meta name="description" content="Protótipo de marketplace de impressão 3D: conecte clientes e makers.">
 <title>Maker3D Protótipo</title>
-<style>
-:root,body.client{--pri:#ff6a00;--pri2:#fff0e3;--priInk:#b84700;--bg:#fff8f2}
-body.maker{--pri:#7c3aed;--pri2:#f0e8ff;--priInk:#5b21b6;--bg:#f7f4ff}
-:root{--card:#fff;--ink:#0b0b0f;--mut:#6f6b78;--line:#e8e4ee;--bad:#d93a3a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,Segoe UI,sans-serif;padding-bottom:80px;transition:background .3s}
-header{position:sticky;top:0;z-index:5;background:#0b0b0f;color:#fff;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.logo{font-weight:800;font-size:19px;letter-spacing:-.5px}.logo b{color:var(--pri)}.logo .mut{color:#888}
-.sw{display:flex;background:#1d1d26;border-radius:99px;padding:3px;margin-left:auto}
-.sw button{border:0;background:none;color:#aaa;padding:7px 14px;border-radius:99px;font-weight:700;cursor:pointer}
-.sw button.on{background:var(--pri);color:#fff}
-.coin{background:var(--pri);color:#fff;font-weight:800;padding:5px 12px;border-radius:99px}
-main{max-width:720px;margin:0 auto;padding:16px}
-h2{margin:6px 0 14px;font-size:24px;letter-spacing:-.5px}h3{margin:18px 0 8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
-.tag{font-size:12px;font-weight:700;background:var(--pri2);color:var(--priInk);padding:3px 10px;border-radius:99px}
-.tag.ok{background:#0b0b0f;color:#fff}.tag.bad{background:#fde3e3;color:var(--bad)}.tag.warn{background:var(--pri2);color:var(--priInk)}
-.mut{color:var(--mut);font-size:13px}
-button.b{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:11px 18px;font-weight:800;cursor:pointer;font-size:15px;transition:transform .1s,filter .15s}
-button.b:hover{filter:brightness(1.08)}button.b:active{transform:scale(.97)}
-button.b.s{background:var(--pri2);color:var(--priInk)}button.b.r{background:#fde3e3;color:var(--bad)}button.b.g{background:#0b0b0f;color:#fff}
-button.b.big{padding:15px 28px;font-size:17px;border-radius:14px}button.b:disabled{opacity:.45}
-label{display:block;font-weight:700;font-size:13px;margin:10px 0 4px}
-input,select,textarea{width:100%;padding:11px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;outline:0}
-input:focus,select:focus,textarea:focus{border-color:var(--pri)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#0b0b0f;display:flex;justify-content:space-around;padding:6px 0;z-index:5}
-nav button{background:none;border:0;color:#9a98a6;font-weight:700;padding:9px 10px;cursor:pointer;font-size:13px}nav button.on{color:var(--pri)}
-.hero{background:radial-gradient(circle at 85% -10%,var(--pri) -15%,transparent 55%),#0b0b0f;color:#fff;border-radius:22px;padding:36px 22px;text-align:center;margin-bottom:14px}
-.hero h1{font-size:32px;line-height:1.1;margin:10px 0;letter-spacing:-1px}.hero h1 span{color:var(--pri)}
-.hero p{color:#c9c7d3;margin:0 0 18px}.hero .tag{background:#ffffff1f;color:#fff}
-.hero.sm{text-align:left;padding:20px}.hero.sm h2{margin:0;font-size:22px}
-.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{display:inline-block;margin:0;border:2px solid var(--line);background:#fff;border-radius:99px;padding:9px 15px;font-weight:700;cursor:pointer;font-size:14px}
-.chip:has(input:checked){border-color:var(--pri);background:var(--pri2);color:var(--priInk)}
-.step{display:flex;gap:9px;align-items:center;font-weight:800;margin:18px 0 8px}
-.step i{background:var(--pri);color:#fff;border-radius:50%;width:24px;height:24px;display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}
-.how{display:flex;gap:12px;align-items:flex-start;margin:10px 0}.how .ic{font-size:26px}
-.lock{filter:blur(5px);user-select:none}
-#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#0b0b0f;color:#fff;padding:10px 18px;border-radius:99px;opacity:0;transition:.25s;pointer-events:none;z-index:9;border:2px solid var(--pri)}#toast.on{opacity:1}
-.pack{display:flex;justify-content:space-between;align-items:center}
-a{color:var(--priInk)}
-</style>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
-<header>
-  <div class="logo">Maker<b>3D</b> <span class="mut">protótipo</span></div>
-  <span id="coin" class="coin" style="display:none"></span>
-  <div class="sw"><button id="swC">App Cliente</button><button id="swM">App Maker</button></div>
-</header>
-<main id="app"></main>
-<nav id="nav"></nav>
-<div id="toast"></div>
-<script>
-const KEY='m3d_v2';
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const brl=n=>'R$ '+Number(n).toFixed(0);
-const FIN={unica:'Cor única',multi:'Multicolorido',pintado:'Aceita pintado'};
-const BASE=[150,250,400]; // moedinhas por desbloqueio (até R$100 / até R$400 / acima)
-const MOD_DISC=0.7; // modelador paga 70%
-const fm=n=>'R$ '+Number(n).toFixed(2).replace('.',',');
-const packs=()=>[{t:500,p:S.firstBuy?50:34.9,n:S.firstBuy?'Pacote 500':'Primeira compra',first:!S.firstBuy},{t:1100,p:100,n:'Pacote 1100 (+10%)'},{t:2800,p:250,n:'Pacote 2800 (+12%)'}];
-
-function seed(){
-  const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
-  const mk=(id,client,phone,title,desc,mat,qty,fin,days,min,max,cep,unl,files)=>({id,client,phone,title,desc,material:mat,qty,finish:fin,deadline:d(days),min,max,cep,unlocks:unl,max_unl:4,status:'aberto',mine:false,files,demand:files.length?'arquivo':'modelagem'});
-  return {
-    role:'client',view:{client:'home',maker:'board'},
-    orders:[
-      mk(1,'Carlos Mendes','11999990001','Suporte de headset','Suporte para mesa, altura 25cm.','PLA',2,'unica',10,30,80,'13015-000',1,['suporte.stl']),
-      mk(2,'Ana Paula Souza','11988880002','Miniaturas RPG (8 unid.)','Preciso modelar e imprimir 8 miniaturas de heróis, pintadas.','Resina',8,'pintado',20,250,400,'13010-100',0,[]),
-      mk(3,'Metalúrgica Rocha','11977770003','Lote 200 engates plásticos','Peça técnica em ABS, lote para linha de montagem.','ABS',200,'unica',30,1200,2000,'13050-200',2,['engate.step','desenho.pdf']),
-      mk(4,'Julia Ramos','11966660004','Vaso geométrico multicolorido','Vaso decorativo, 3 cores.','PETG',1,'multi',7,60,100,'13020-300',3,['vaso.stl']),
-      mk(5,'Pedro Alves','11955550005','Peça de reposição lavadora','Tenho foto da peça quebrada, preciso copiar e imprimir.','Não sei',1,'unica',12,40,90,'13035-400',0,['foto.jpg'])
-    ],
-    unlocks:[], tokens:0, firstBuy:false, history:[],
-    maker:{type:'impressor',name:'Meu Estúdio 3D',cep:'13015-500',raio:30,printers:['FDM','Resina'],volume:'256x256x256',materials:['PLA','PETG','ABS'],multi:true,paint:true,model:false,bio:''},
-    client:{name:'Cliente Teste',phone:'11900000000'}
-  };
-}
-let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){} if(!S||!S.orders)S=seed();
-S.chats=S.chats||{};S.freeUsed=S.freeUsed||false;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)}
-
-// ---------- regras ----------
-const cost=o=>Math.round(BASE[o.max<=100?0:o.max<=400?1:2]*(S.maker.type==='modelador'?MOD_DISC:1));
-const status=o=>o.status!=='aberto'?o.status:(o.unlocks>=o.max_unl?'lotado':(o.deadline<new Date().toISOString().slice(0,10)?'expirado':'aberto'));
-const dist=(a,b)=>{const x=parseInt(String(a).replace(/\D/g,'').slice(0,5)||0),y=parseInt(String(b).replace(/\D/g,'').slice(0,5)||0);return Math.max(1,Math.round(Math.abs(x-y)/12))}; // estimativa fake (produção: ViaCEP + Maps)
-const isUnl=id=>S.unlocks.find(u=>u.order===id&&!u.refunded);
-const addHist=(t,v)=>S.history.unshift({t,v,d:new Date().toISOString()});
-const fdate=s=>s.split('-').reverse().join('/');
-
-// ---------- navegação ----------
-function setRole(r){S.role=r;save();render()}
-function go(v){if(S.role==='client'&&(v==='new'||v==='mine')&&!S.client.reg)v='signup';S.view[S.role]=v;save();render()}
-$('#swC').onclick=()=>setRole('client');$('#swM').onclick=()=>setRole('maker');
-
-function render(){
-  const r=S.role,v=S.view[r];document.body.className=r;
-  $('#swC').classList.toggle('on',r==='client');$('#swM').classList.toggle('on',r==='maker');
-  const c=$('#coin');c.style.display=r==='maker'?'':'none';c.textContent='🪙 '+S.tokens;
-  const tabs=r==='client'?[['home','Início'],['new','Novo pedido'],['mine','Meus pedidos']]:[['board','Mural'],['contracts','Contratos'],['wallet','Carteira'],['profile','Perfil']];
-  $('#nav').innerHTML=tabs.map(([k,l])=>`<button class="${k===v?'on':''}" onclick="go('${k}')">${l}</button>`).join('');
-  $('#app').innerHTML=(V[r+'_'+v]||(()=>'Em construção'))();
-  window.scrollTo(0,0);
-}
-const V={};
-
-// ================= APP CLIENTE =================
-const chips=(name,opts,def)=>`<div class="chips">`+opts.map(([v,l])=>`<label class="chip"><input type="radio" name="${name}" value="${v}" ${v===def?'checked':''} hidden>${l}</label>`).join('')+`</div>`;
-V.client_home=()=>`<div class="hero"><span class="tag">100% grátis para clientes</span><h1>Sua peça 3D<br><span>em 1 minuto</span></h1><p>Conte o que você precisa. Makers da sua região chamam você.</p>
-<button class="b big" onclick="go('new')">Pedir minha peça</button></div>
-${S.client.reg?`<div class="card row sp"><div>👋 Olá, <b>${esc(S.client.name.split(' ')[0])}</b><div class="mut">${S.orders.filter(o=>o.mine).length} pedido(s) seu(s)</div></div><div class="row"><button class="b s" onclick="go('mine')">Meus pedidos</button><button class="b s" onclick="go('signup')">Meus dados</button></div></div>`:''}
-<div class="card"><b>Como funciona</b>
-<div class="how"><span class="ic">📝</span><div><b>1. Cadastre e peça</b><div class="mut">Seu nome e WhatsApp, depois 7 toques para descrever a peça.</div></div></div>
-<div class="how"><span class="ic">🖨️</span><div><b>2. Makers próximos se interessam</b><div class="mut">Até 4 makers desbloqueiam seu pedido.</div></div></div>
-<div class="how"><span class="ic">💬</span><div><b>3. Eles entram em contato</b><div class="mut">Você compara orçamentos e fecha com quem quiser.</div></div></div></div>
-<p style="text-align:center"><a href="#" onclick="setRole('maker');return false">Sou maker, quero ver pedidos →</a></p>`;
-V.client_signup=()=>{const c=S.client;return `<h2>${c.reg?'Meus dados':'Cadastro rápido'}</h2><div class="card"><form onsubmit="return saveReg(event)">
-<label>Seu nome</label><input name="name" required value="${esc(c.reg?c.name:'')}" placeholder="Maria Silva">
-<label>WhatsApp (com DDD)</label><input name="phone" required inputmode="tel" value="${esc(c.reg?c.phone:'')}" placeholder="11999999999">
-<label>E-mail (opcional)</label><input name="email" type="email" value="${esc(c.email||'')}" placeholder="voce@email.com">
-<p class="mut">🔒 Seus dados de contato ficam escondidos. Só os makers que desbloquearem seu pedido conseguem ver.</p>
-<button class="b big" style="width:100%">${c.reg?'Salvar':'Continuar'}</button></form></div>`};
-function saveReg(e){e.preventDefault();const f=new FormData(e.target),first=!S.client.reg;
-  S.client={name:f.get('name'),phone:f.get('phone'),email:f.get('email'),reg:true};save();toast(first?'Cadastro feito!':'Dados salvos');go(first?'new':'home');return false}
-V.client_new=()=>`<h2>O que você precisa?</h2><div class="card"><form onsubmit="return newOrder(event)">
-<div class="step" style="margin-top:0"><i>1</i>Descreva a peça</div>
-<input name="title" required maxlength="60" placeholder="Ex: Suporte de celular para carro">
-<textarea name="desc" rows="2" placeholder="Medidas, uso, detalhes… (opcional)" style="margin-top:8px"></textarea>
-<div class="step"><i>2</i>Você tem o arquivo 3D?</div>${chips('demand',[['arquivo','📁 Tenho o arquivo'],['modelagem','✏️ Preciso criar o modelo']],'arquivo')}
-<div class="step"><i>3</i>Material</div>${chips('material',[['PLA','PLA'],['PETG','PETG'],['ABS','ABS'],['Resina','Resina'],['Não sei','Não sei']],'Não sei')}
-<div class="step"><i>4</i>Acabamento</div>${chips('finish',[['unica','Cor única'],['multi','Multicolorido'],['pintado','Aceito pintado']],'unica')}
-<div class="step"><i>5</i>Quanto pretende gastar?</div>${chips('bud',[['20-100','Até R$100'],['100-400','R$100–400'],['400-1000','R$400–1.000'],['1000-5000','Acima de R$1.000']],'20-100')}
-<div class="step"><i>6</i>Para quando?</div>${chips('days',[['3','Urgente (3 dias)'],['7','1 semana'],['15','15 dias'],['30','1 mês']],'15')}
-<div class="step"><i>7</i>Onde você está?</div>
-<div class="g2"><input name="cep" required placeholder="CEP 00000-000" maxlength="9" inputmode="numeric"><input name="qty" type="number" min="1" value="1" placeholder="Quantidade"></div>
-<label>Foto ou arquivo (opcional)</label><input name="files" type="file" multiple>
-<div class="card" style="background:var(--pri2);border:0;margin:16px 0 12px">📱 Os makers vão falar com você pelo contato do seu cadastro: <b>${esc(S.client.phone)}</b>. Fica escondido até eles desbloquearem.</div>
-<button class="b big" style="width:100%">Publicar grátis</button></form></div>`;
-function newOrder(e){e.preventDefault();const f=new FormData(e.target),[min,max]=f.get('bud').split('-').map(Number),d=new Date();d.setDate(d.getDate()+ +f.get('days'));
-  const files=[...e.target.files.files].map(x=>x.name);
-  S.orders.unshift({id:Date.now(),client:S.client.name,phone:S.client.phone,email:S.client.email,title:f.get('title'),desc:f.get('desc')||'(sem descrição extra)',demand:f.get('demand'),material:f.get('material'),qty:+f.get('qty')||1,finish:f.get('finish'),deadline:d.toISOString().slice(0,10),min,max,cep:f.get('cep'),unlocks:0,max_unl:4,status:'aberto',mine:true,files});
-  save();toast('Pedido publicado! 🎉');go('mine');return false}
-V.client_mine=()=>{const l=S.orders.filter(o=>o.mine);
-  return `<h2>Meus pedidos</h2>`+(l.length?l.map(o=>{const st=status(o);return `<div class="card"><div class="row sp"><b>${esc(o.title)}</b><span class="tag ${st==='aberto'?'ok':st==='fechado'?'':'warn'}">${st}</span></div>
-  <div class="mut">${esc(o.material)} · ${FIN[o.finish]} · ${brl(o.min)}–${brl(o.max)} · prazo ${fdate(o.deadline)}</div>
-  <p><b>${o.unlocks}/${o.max_unl}</b> makers desbloquearam seu contato</p>${chatHtml(o.id,'client')}
-  <div class="row">${o.status==='aberto'?`<button class="b g" onclick="closeOrder(${o.id})">Contrato fechado / Encerrar</button>`:''}
-  ${st==='aberto'?`<button class="b s" onclick="fakeUnlock(${o.id})">Demo: outro maker desbloqueia</button>`:''}
-  <button class="b r" onclick="delOrder(${o.id})">Excluir</button></div></div>`}).join(''):`<div class="card mut">Você ainda não publicou nenhum pedido.</div><button class="b" onclick="go('new')">Criar pedido</button>`)};
-function closeOrder(id){const o=S.orders.find(x=>x.id===id);o.status='fechado';save();toast('Anúncio encerrado');render()}
-function delOrder(id){if(!confirm('Excluir este pedido?'))return;S.orders=S.orders.filter(x=>x.id!==id);save();render()}
-function fakeUnlock(id){const o=S.orders.find(x=>x.id===id);if(o.unlocks<o.max_unl)o.unlocks++;save();toast(o.unlocks>=o.max_unl?'Pedido lotado':'Um maker desbloqueou');render()}
-
-// ================= APP MAKER =================
-let flt={mat:'',fin:'',sort:'new'};
-V.maker_board=()=>{
-  let l=S.orders.filter(o=>status(o)==='aberto'&&!isUnl(o.id)&&(S.maker.type!=='modelador'||o.demand==='modelagem'));
-  if(flt.mat)l=l.filter(o=>o.material===flt.mat);if(flt.fin)l=l.filter(o=>o.finish===flt.fin);
-  if(flt.sort==='dist')l.sort((a,b)=>dist(a.cep,S.maker.cep)-dist(b.cep,S.maker.cep));
-  if(flt.sort==='val')l.sort((a,b)=>b.max-a.max);
-  return `<div class="hero sm"><h2>Pedidos perto de você</h2><p style="margin:4px 0 0">Desbloqueie e fale direto com o cliente.</p></div><div class="g2" style="margin-bottom:12px">
-  <select onchange="flt.mat=this.value;render()"><option value="">Todo material</option>${['PLA','PETG','ABS','Resina'].map(m=>`<option ${flt.mat===m?'selected':''}>${m}</option>`).join('')}</select>
-  <select onchange="flt.sort=this.value;render()"><option value="new">Mais novos</option><option value="dist" ${flt.sort==='dist'?'selected':''}>Mais perto</option><option value="val" ${flt.sort==='val'?'selected':''}>Maior valor</option></select></div>`
-  +(l.length?l.map(o=>{const c=cost(o),d=dist(o.cep,S.maker.cep);return `<div class="card"><div class="row sp"><b>${esc(o.title)}</b>${o.mine?'<span class="tag warn">seu anúncio (teste)</span>':''}</div>
-  <p class="mut" style="margin:4px 0">${esc(o.desc.slice(0,90))}${o.desc.length>90?'…':''}</p>
-  <div class="row"><span class="tag">${esc(o.material)}</span><span class="tag">${FIN[o.finish]}</span><span class="tag">${o.qty} un.</span><span class="tag">📍 ~${d} km</span></div>
-  <div class="mut" style="margin:8px 0">Valor ${brl(o.min)}–${brl(o.max)} · prazo ${fdate(o.deadline)} · vagas ${o.max_unl-o.unlocks}/${o.max_unl}</div>
-  <div class="mut lock">👤 Nome do cliente · 📱 (11) 9•••• ••••</div>
-  ${!S.freeUsed&&!S.firstBuy&&c<=150?`<button class="b g" style="width:100%;margin-top:8px" onclick="unlock(${o.id},true)">🎁 Desbloquear GRÁTIS (1º contato · só chat no app)</button><div class="mut" style="text-align:center;margin-top:4px">ou <a href="#" onclick="unlock(${o.id});return false">pague ${c} 🪙 e libere o WhatsApp</a></div>`:`<button class="b" style="width:100%;margin-top:8px" onclick="unlock(${o.id})">🪙 Desbloquear por ${c} moedinhas</button>`}</div>`}).join(''):'<div class="card mut">Nenhum pedido com esses filtros.</div>');
-};
-function unlock(id,free){const o=S.orders.find(x=>x.id===id),c=cost(o);
-  if(status(o)!=='aberto'){toast('Pedido não está mais disponível');return render()}
-  if(free){if(S.freeUsed||S.firstBuy||c>150){toast('Desbloqueio grátis só para contas novas');return}
-    S.freeUsed=true;o.unlocks++;S.unlocks.push({order:id,paid:0,free:true,date:new Date().toISOString(),refunded:false});
-    addHist('Desbloqueio GRÁTIS (só chat): '+o.title,0);save();toast('Desbloqueado grátis! Fale com o cliente pelo chat');S.view.maker='contracts';S.open=id;render();return}
-  if(S.tokens<c){if(confirm(`Faltam moedinhas (precisa ${c}, tem ${S.tokens}). Ir para a carteira?`))go('wallet');return}
-  S.tokens-=c;o.unlocks++;S.unlocks.push({order:id,paid:c,free:false,date:new Date().toISOString(),refunded:false});
-  addHist('Desbloqueio: '+o.title,-c);save();toast('Contrato desbloqueado!');S.view.maker='contracts';S.open=id;render()}
-function upgrade(id){const o=S.orders.find(x=>x.id===id),u=S.unlocks.find(x=>x.order===id),c=cost(o);
-  if(S.tokens<c){if(confirm(`Faltam moedinhas (precisa ${c}, tem ${S.tokens}). Ir para a carteira?`))go('wallet');return}
-  S.tokens-=c;u.free=false;u.paid=c;addHist('Contato completo: '+o.title,-c);save();toast('Contato completo liberado!');render()}
-// chat: contato só pelo app, telefone bloqueado
-const blocked=t=>/(\d[\s.\-()]*){8,}/.test(t)||/\S+@\S+/.test(t)||/(wa\.me|whats|zap|wpp|telegram|insta|ligue|liga pra)/i.test(t);
-function chatHtml(id,as){const t=S.chats[id]||[];
-  return `<div style="margin-top:10px"><div class="mut"><b>💬 Chat no app</b> · ${as==='maker'&&S.firstBuy?'você já pode enviar seu contato':'telefones e contatos externos são bloqueados'}</div>
-  <div style="max-height:200px;overflow:auto;padding:6px 0">${t.map(m=>`<div style="text-align:${m.from===as?'right':'left'};margin:3px 0"><span class="tag ${m.from===as?'':'warn'}" style="white-space:normal;display:inline-block;font-weight:500;text-align:left">${esc(m.text)}</span></div>`).join('')||'<div class="mut">Sem mensagens ainda.</div>'}</div>
-  ${as==='client'&&!t.length?'':`<div class="row"><input id="ci_${as}_${id}" placeholder="Escreva uma mensagem..." style="flex:1" onkeydown="if(event.key==='Enter')sendMsg(${id},'${as}')"><button class="b" onclick="sendMsg(${id},'${as}')">Enviar</button></div>`}</div>`}
-function sendMsg(id,as){const el=$('#ci_'+as+'_'+id),text=el.value.trim();if(!text)return;
-  if(blocked(text)&&!(as==='maker'&&S.firstBuy)){
-    if(as==='maker'){const p=packs()[0];if(!confirm(`🚫 Para enviar seu número/contato no chat você precisa liberar o contato externo comprando o pacote mínimo: ${p.t} 🪙 por ${fm(p.p)} (Pix simulado). Comprar agora e enviar?`))return;
-      S.firstBuy=true;S.tokens+=p.t;addHist('Compra '+p.n+' (liberou contato externo)',p.t);toast('Contato externo liberado! +'+p.t+' 🪙')}
-    else{toast('🚫 Número/contato externo bloqueado. Converse pelo app.');return}}
-  (S.chats[id]=S.chats[id]||[]).push({from:as,text,t:Date.now()});save();render();
-  const o=S.orders.find(x=>x.id===id);
-  if(as==='maker'&&o&&!o.mine)setTimeout(()=>{S.chats[id].push({from:'client',text:'Olá! Pode me passar o orçamento e o prazo?',t:Date.now()});save();if(S.role==='maker'&&S.view.maker==='contracts')render()},1500)}
-V.maker_contracts=()=>{const l=S.unlocks.slice().reverse();
-  return `<h2>Meus contratos</h2>`+(l.length?l.map(u=>{const o=S.orders.find(x=>x.id===u.order);if(!o)return '';const c=cost(o);
-  const wa='https://wa.me/55'+o.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Olá '+o.client+', vi seu pedido "'+o.title+'" no Maker3D. Posso te ajudar!');
-  return `<div class="card" ${S.open===o.id?'style="border-color:var(--pri)"':''}><div class="row sp"><b>${esc(o.title)}</b>${u.refunded?'<span class="tag bad">estornado</span>':u.free?'<span class="tag warn">grátis · só chat</span>':`<span class="tag ok">pago ${u.paid} 🪙</span>`}</div>
-  <p class="mut" style="margin:4px 0">${esc(o.desc)}</p><div class="row"><span class="tag">${esc(o.material)}</span><span class="tag">${FIN[o.finish]}</span><span class="tag">${o.qty} un.</span><span class="tag">${brl(o.min)}–${brl(o.max)}</span><span class="tag">prazo ${fdate(o.deadline)}</span></div>
-  <div class="card" style="background:var(--pri2);margin:10px 0 0">
-  ${u.free?`<div>👤 <b>${esc(o.client.split(' ')[0])}</b></div><div class="mut">📱 Telefone, WhatsApp e arquivos só no desbloqueio completo. Por enquanto, converse pelo chat.</div><button class="b" style="margin-top:6px" onclick="upgrade(${o.id})">Liberar contato completo · ${c} 🪙</button>`
-  :`<div>👤 <b>${esc(o.client)}</b></div><div>📱 ${esc(o.phone)} · CEP ${esc(o.cep)}</div>${o.email?`<div>✉️ ${esc(o.email)}</div>`:''}
-  <div class="mut">Arquivos: ${o.files.length?o.files.map(f=>`<a href="#" onclick="toast('Download simulado: ${esc(f)}');return false">📎 ${esc(f)}</a>`).join(' '):'nenhum anexado'}</div>
-  <div class="row" style="margin-top:8px"><a href="${wa}" target="_blank"><button class="b g">Chamar no WhatsApp</button></a>${u.refunded?'':`<button class="b r" onclick="report(${o.id})">Reportar lead inválido</button>`}</div>`}
-  ${chatHtml(o.id,'maker')}</div></div>`}).join(''):`<div class="card mut">Você ainda não desbloqueou nada.</div><button class="b" onclick="go('board')">Ver mural</button>`)};
-function report(id){if(!confirm('Reportar lead inválido? (número falso, arquivo corrompido…) Na versão real, a equipe analisa antes do estorno.'))return;
-  const u=S.unlocks.find(x=>x.order===id);u.refunded=true;S.tokens+=u.paid;addHist('Estorno (lead inválido)',u.paid);save();toast('Moedinhas estornadas (simulação)');render()}
-V.maker_wallet=()=>`<h2>Carteira</h2><div class="card" style="text-align:center"><div class="mut">Saldo</div><div style="font-size:40px;font-weight:800">🪙 ${S.tokens}</div><div class="mut">Desbloqueio: ${cost({max:50})} 🪙 (até R$100) · ${cost({max:300})} 🪙 (R$100–400) · ${cost({max:900})} 🪙 (acima de R$400)<br>Conta: <b>${S.maker.type==='modelador'?'Modelador (preço reduzido)':'Impressor'}</b></div></div>
-<h3>Comprar moedinhas (Pix simulado)</h3>${S.firstBuy?'':'<div class="card" style="background:#fff3cf;color:#8a5a00"><b>Oferta de primeira compra:</b> 500 🪙 por R$ 34,90 (depois, mínimo R$ 50,00)</div>'}${packs().map((p,i)=>`<div class="card pack"><div><b>${p.n}</b><div class="mut">${p.t} 🪙 · ${Math.floor(p.t/BASE[0])} desbloqueios de pedidos pequenos</div></div><button class="b" onclick="buy(${i})">${fm(p.p)} Pix</button></div>`).join('')}
-<h3>Histórico</h3>${S.history.map(h=>`<div class="card row sp"><div>${esc(h.t)}<div class="mut">${new Date(h.d).toLocaleString('pt-BR')}</div></div><b style="color:${h.v>0?'var(--ok)':'var(--bad)'}">${h.v>0?'+':''}${h.v} 🪙</b></div>`).join('')}
-<button class="b s" onclick="resetAll()">Reiniciar protótipo</button>`;
-function buy(i){const p=packs()[i];if(!confirm(`Pagar ${fm(p.p)} via Pix? (simulado, nada é cobrado)`))return;S.firstBuy=true;S.tokens+=p.t;addHist('Compra '+p.n,p.t);save();toast('+'+p.t+' moedinhas!');render()}
-function resetAll(){if(!confirm('Apagar tudo e recomeçar?'))return;localStorage.removeItem(KEY);S=seed();render()}
-V.maker_profile=()=>{const m=S.maker;return `<h2>Perfil técnico</h2><div class="card"><form onsubmit="return saveProf(event)">
-<label>Tipo de conta</label><select name="type"><option value="impressor" ${m.type==='impressor'?'selected':''}>Impressor (imprime peças — vê todos os pedidos)</option><option value="modelador" ${m.type==='modelador'?'selected':''}>Modelador / criador de modelos (preço reduzido — só pedidos de modelagem)</option></select>
-<label>Nome do estúdio</label><input name="name" value="${esc(m.name)}">
-<div class="g2"><div><label>CEP</label><input name="cep" value="${esc(m.cep)}"></div><div><label>Raio (km)</label><input name="raio" type="number" value="${m.raio}"></div></div>
-<label>Impressoras (separe por vírgula)</label><input name="printers" value="${esc(m.printers.join(', '))}">
-<label>Mesa máx. X×Y×Z (mm)</label><input name="volume" value="${esc(m.volume)}">
-<label>Materiais</label><input name="materials" value="${esc(m.materials.join(', '))}">
-<label><input type="checkbox" name="multi" ${m.multi?'checked':''} style="width:auto"> Faz impressão multicolorida (AMS/MMU)</label>
-<label><input type="checkbox" name="paint" ${m.paint?'checked':''} style="width:auto"> Faz pintura / acabamento</label>
-<label><input type="checkbox" name="model" ${m.model?'checked':''} style="width:auto"> Faz modelagem 3D</label>
-<label>Bio</label><textarea name="bio" rows="2">${esc(m.bio)}</textarea>
-<button class="b" style="width:100%;margin-top:10px">Salvar perfil</button></form></div>`};
-function saveProf(e){e.preventDefault();const f=new FormData(e.target),l=s=>f.get(s).split(',').map(x=>x.trim()).filter(Boolean);
-  S.maker={type:f.get('type'),name:f.get('name'),cep:f.get('cep'),raio:+f.get('raio'),printers:l('printers'),volume:f.get('volume'),materials:l('materials'),multi:!!f.get('multi'),paint:!!f.get('paint'),model:!!f.get('model'),bio:f.get('bio')};
-  save();toast('Perfil salvo');return false}
-
-render();
-</script>
+<body class="public">
+<div id="stage">
+  <aside id="side"></aside>
+  <div id="phone"><header id="top"></header><main id="app"></main><nav id="bar"></nav></div>
+</div>
+<div id="toast" role="status"></div><div id="modal"></div>
+<script src="core.js"></script>
+<script src="data.js"></script>
+<script src="views_public.js"></script>
+<script src="views_client.js"></script>
+<script src="views_maker.js"></script>
+<script src="views_admin.js"></script>
+<script src="boot.js"></script>
 </body>
 </html>

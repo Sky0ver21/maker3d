@@ -1,0 +1,482 @@
+================================================================================
+MAKER3D (nome provisório) - DOCUMENTO COMPLETO DA IDEIA
+Criado em: 13/11/2026
+Protótipo: C:\Users\User\Downloads\Maker3D\index.html
+Site de teste: https://sky0ver21.github.io/maker3d/
+Repositório: https://github.com/Sky0ver21/maker3d
+================================================================================
+
+ÍNDICE
+ 1. Visão e fluxo central (PRD original)
+ 2. Estado atual do protótipo
+ 3. Regras de moedas (fechadas)
+ 4. Regras dos usuários: Cliente (PF/Empresa) e Maker
+ 5. Motor de conexão (matching) e regra dos contratos de alto valor
+ 6. Estimador de preço (valores fixos)
+ 7. Seções e menus do site, versão mobile e demonstração para investidor
+ 8. Ideias adicionais (confiança, receita, experiência)
+ 9. Pesquisa de concorrentes e semelhantes
+10. Plano do "mastermind" (apostas, riscos, receita, métricas, roadmap)
+11. Decisões já tomadas
+12. ESTUDO DE NOME E DOMÍNIO
+13. Prompt mestre: fases e critérios de aceite
+14. Pendências e perguntas abertas
+
+================================================================================
+1. VISÃO E FLUXO CENTRAL (PRD ORIGINAL)
+================================================================================
+Marketplace de venda de leads (modelo GetNinjas) para impressão 3D. Conecta
+clientes que precisam de peças personalizadas ou protótipos a prestadores
+(makers) e modeladores 3D locais.
+
+CLIENTE (publicação gratuita): descreve o que precisa (arquivo pronto ou peça
+sob medida), material (PLA, PETG, ABS, Resina...), acabamento (multicolorido,
+aceita pintura, cor única), prazo, faixa de orçamento (R$ X a R$ Z) e CEP.
+
+MAKER (vitrine e desbloqueio pago): vê só os dados básicos do pedido. Paga
+moedas para desbloquear. Ao desbloquear, recebe WhatsApp/telefone e arquivos
+do cliente para negociar direto.
+
+MONETIZAÇÃO: publicação grátis para o cliente; makers compram pacotes de
+moedas (Pix ou cartão); preço de desbloqueio proporcional ao orçamento do
+pedido; trava de exclusividade: máximo de 4 desbloqueios por pedido, depois
+o pedido fica "lotado".
+
+PROTEÇÃO DE DADOS (regra de backend): a API nunca envia telefone ou arquivo ao
+front enquanto não existir registro de desbloqueio daquele maker.
+
+ESTORNO: se o lead for falso (número inexistente, arquivo corrompido), o maker
+clica "Reportar lead inválido" e as moedas voltam após análise.
+
+MODERAÇÃO: proibido armas de fogo, peças bélicas ou itens ilegais; botão de
+denúncia.
+
+STACK RECOMENDADA (versão real): Next.js/React (PWA) + Supabase (login, banco,
+storage, regras de segurança por linha) + Asaas ou Mercado Pago para Pix +
+ViaCEP e Google Maps/Mapbox para distância.
+
+TABELAS PREVISTAS: Users, Maker_Profiles, Orders, Unlocked_Leads
+(+ Messages, Reviews, Notifications nas próximas versões).
+
+VALIDAÇÃO EM FASES (PRD): Fase 1 (semana 1-2): 15 a 20 makers locais;
+Fase 2 (semana 3-6): bônus inicial de moedas para testar desbloqueios;
+Fase 3 (semana 7+): ativar recarga paga via Pix.
+
+================================================================================
+2. ESTADO ATUAL DO PROTÓTIPO
+================================================================================
+- Arquivo único index.html, dados no localStorage (chave m3d_v2), sem servidor.
+- Dois apps com troca no topo: App Cliente (laranja, preto, branco) e App Maker
+  (roxo, preto, branco).
+- Cliente: landing, cadastro rápido (nome, WhatsApp, e-mail opcional), pedido em
+  7 passos com chips, "Meus pedidos", botão encerrar contrato, botão de demo
+  "outro maker desbloqueia".
+- Maker: mural com cards (contato borrado), desbloqueio, contratos, chat,
+  carteira (compra simulada), perfil técnico, tipo de conta Impressor/Modelador.
+- 5 pedidos de exemplo. Tudo que é Pix, distância e verificação é simulado.
+- Foi publicado no GitHub Pages (conta Sky0ver21).
+- Ainda NÃO existe: foto no anúncio, segmentos Empresa/Comercial, matching,
+  estimador, várias seções, versão mobile instalável, modo apresentação.
+
+================================================================================
+3. REGRAS DE MOEDAS (FECHADAS)
+================================================================================
+- Primeira compra: 500 moedas por R$ 34,90 (uma vez por conta).
+- Depois: mínimo 500 moedas por R$ 50,00.
+- Pacotes maiores com bônus (sugestão): 1.100 por R$ 100; 2.800 por R$ 250.
+  Empresas (sugestão): 1.000 por R$ 100; 2.600 por R$ 250; 6.000 por R$ 500.
+- Desbloqueio começa em 150 moedas. Faixas atuais (Comercial):
+  pedido até R$ 100 -> 150; R$ 100 a 400 -> 250; acima de R$ 400 -> 400.
+  Faixas sugeridas (Empresas/mecânico): 300, 500 e 800 moedas.
+- Conta Modelador (só modelagem) paga 70% do preço.
+- 1 desbloqueio GRÁTIS por maker, só para CONTA NOVA (que nunca comprou moedas),
+  em pedido de até 150 moedas. É só chat: sem telefone, sem WhatsApp, sem
+  e-mail, sem arquivos. O maker pode pagar para "liberar contato completo".
+  Na versão real, prender ao telefone/CPF verificado (antifraude).
+- Chat BLOQUEIA telefone, e-mail e termos tipo "whats/zap/wpp/telegram/insta".
+  Para o maker enviar contato externo no chat, precisa ter comprado o pacote
+  mínimo (R$ 34,90 na primeira compra). Cliente nunca envia número no chat.
+- Máximo de 4 desbloqueios por pedido; depois "lotado".
+- Contrato RECORRENTE custa +50% no desbloqueio.
+- VALIDADE: moedas expiram em 90 DIAS. Cada compra é um lote com seu próprio
+  prazo; gasta-se o lote mais antigo primeiro; avisos 14, 7 e 1 dia antes.
+  (Validar com advogado: expiração de crédito pré-pago e direito de
+  arrependimento de 7 dias em compra online.)
+- PREÇO DINÂMICO do desbloqueio (multiplicador ~0,8x a 1,5x sobre a faixa base):
+  vagas restantes (última vaga mais cara), demanda de makers na região, idade do
+  pedido (mais barato perto do prazo), qualidade do cliente (verificado,
+  responde rápido), contrato recorrente (+50%). O maker vê o preço final e o
+  motivo ANTES de pagar. Ex.: "210 moedas - alta demanda na região".
+
+================================================================================
+4. REGRAS DOS USUÁRIOS
+================================================================================
+4.1 CLIENTE
+- Cadastro rápido: nome, WhatsApp, e-mail opcional. Esses dados vão para o
+  maker SOMENTE após o desbloqueio.
+- Escolha no cadastro: PESSOA FÍSICA ou EMPRESA.
+- EMPRESA: razão social, CNPJ (só formato), ramo, contato e cargo, recorrência
+  (pontual/mensal/semanal) e volume mensal; NÍVEL MÍNIMO DE EQUIPAMENTO exigido
+  (Qualquer / Intermediário tipo Bambu P1S-X1C / Avançado tipo Bambu H2D com
+  câmara fechada / Industrial); materiais obrigatórios (ASA, PETG, PETG-CF,
+  Nylon, PC, TPU...); nota fiscal; relatório de qualidade.
+- Criar pedido, 3 caminhos:
+  (a) "Só tenho uma foto": foto + valor que quer pagar; o resto é opcional e o
+      maker negocia;
+  (b) lista pré-montada de categorias (suporte/organizador, peça de reposição,
+      miniatura/RPG, decoração, brinde/chaveiro, protótipo, peça mecânica,
+      caixa/gabinete, lote industrial recorrente, modelagem, outro);
+  (c) descrever com palavras (o sistema lê palavras-chave e preenche).
+  O sistema deduz segmento, material provável, necessidade de modelagem, nível
+  de equipamento e tags de compatibilidade, e mostra "Entendemos assim: ..."
+  para o cliente corrigir.
+- O cliente não precisa saber de materiais: há guia ("uso externo -> ASA",
+  "carga pesada -> PETG-CF ou Nylon").
+- A FOTO vai junto com a publicação (reduzida para ~800 px e guardada no
+  navegador); aparece no mural, nos detalhes, em "Meus pedidos" e no chat. Sem
+  foto, usa-se placeholder em SVG da categoria.
+- Ao publicar, o anúncio aparece na hora para o maker (mesmo aparelho, trocando
+  de conta; selo "Novo" por 24h e notificação no sino).
+
+4.2 MAKER (triagem em etapas)
+- Quem é: pessoa física, MEI ou CNPJ; emite nota fiscal?
+- O que faz: impressão, modelagem, pintura/acabamento, projeto sob medida.
+- Impressoras: lista (modelo, tecnologia, volume da mesa, câmara fechada,
+  multicolor/AMS). Nível de equipamento calculado: Básico, Intermediário,
+  Avançado ou Industrial. Mostrar a quantidade de impressoras.
+- Materiais: PLA, PETG, ABS, ASA, TPU, Nylon, PC, fibra de carbono, resinas.
+- Capacidade: peças por mês, experiência, disponibilidade.
+- FILTRO DE PÚBLICO: "Empresas, peças mecânicas e técnicas" (mais recorrência,
+  desbloqueio mais caro) / "Comercial, peças pequenas e decorativas" / "Ambos".
+  A escolha muda a tabela de moedas e o feed.
+- Aceita contratos recorrentes? CEP e raio. Portfólio até 6 fotos.
+- Barra de perfil completo e selo "Perfil verificado" (simulado).
+
+4.3 SEGMENTO E PLANO DE MOEDAS
+- Comercial: desbloqueios 150/250/400; pacotes 500/R$50, 1.100/R$100,
+  2.800/R$250.
+- Empresas/mecânico: desbloqueios 300/500/800 (sugestão); pacotes maiores.
+- A primeira compra de R$ 34,90 por 500 moedas vale para qualquer segmento.
+
+================================================================================
+5. MOTOR DE CONEXÃO (MATCHING) E ALTO VALOR
+================================================================================
+O mural do maker é um feed ordenado por pontuação, com "Por que este pedido
+para você". Critérios (do maior peso ao menor): segmento x preferência do
+maker; material exigido/provável x materiais do maker (ASA com ASA, PETG com
+PETG); nível de equipamento exigido x nível do maker (se não atinge, não vê o
+pedido ou vê bloqueado com o motivo); tamanho da peça x mesa; modelagem,
+pintura, multicolor; distância; recorrência. Card mostra "92% compatível" e
+selo Empresa/Pessoa Física.
+
+REGRA DOS CONTRATOS DE ALTO VALOR: nos 3 primeiros contratos do feed, cada um
+tem 25% de chance de ser de alto valor (selo "Cliente de alto valor"), de forma
+determinística por maker e por dia. Devem ser pedidos REAIS do banco com
+orçamento acima do limite; nunca inventar pedidos nem valores falsos. (Nota do
+mastermind: escassez fabricada prejudica a confiança e pode gerar problema de
+consumidor; manter transparente.)
+
+NEGOCIAÇÃO: no chat, botão "Enviar proposta" (valor, prazo, observação); o
+cliente aceita, recusa ou contra-propõe; aceitar move o contrato para
+"Em negociação" e depois "Fechado". Notificações com sino e contador.
+Contratos do maker em abas: Disponíveis, Desbloqueados, Em negociação,
+Fechados, Perdidos.
+
+================================================================================
+6. ESTIMADOR DE PREÇO (VALORES FIXOS)
+================================================================================
+- Filamento: R$ 100,00/kg para PLA e PETG. Outros materiais têm valores
+  próprios (SUGESTÃO, confirmar): ABS 110; ASA 160; TPU 180; Resina 200;
+  PLA-CF/PETG-CF 250; Nylon 300.
+- Hora-máquina: R$ 2,00/h.
+- Energia: consumo médio 500 W, tarifa R$ 1,50/kWh (interpretação de "1.5";
+  CONFIRMAR) = R$ 0,75 por hora.
+- Markup: sempre uma faixa de 50% a 150% sobre o custo.
+
+FÓRMULA:
+  custo  = (gramas/1000 x preço_kg) + (horas x 2,00) + (horas x 0,5 x 1,50)
+  mínimo = custo x 1,5          máximo = custo x 2,5
+
+EXEMPLO (100 g em PLA, 5 h): material 10,00 + máquina 10,00 + energia 3,75 =
+custo R$ 23,75; faixa sugerida R$ 35,63 a R$ 59,38.
+
+Mais perto de 50%: peça simples, grande quantidade, cor única. Mais perto de
+150%: peça complexa, pintura/acabamento, urgência, empresa com exigência de
+equipamento.
+
+AVISO OBRIGATÓRIO em toda tela com preço: "Valores estimados, calculados com
+base em médias. O preço final é negociado com o maker."
+
+Pergunta aberta: equipamentos como a H2D devem ter hora-máquina maior que R$ 2?
+
+================================================================================
+7. SEÇÕES, MENUS, MOBILE E DEMONSTRAÇÃO PARA INVESTIDOR
+================================================================================
+SITE PÚBLICO: barra superior (logo provisório em texto, links, Entrar,
+Cadastrar). Seções: hero; Como funciona; Para empresas; Para makers; Categorias;
+Planos de moedas; FAQ; rodapé com termos e a regra contra armas.
+
+MENU DO USUÁRIO (avatar com dropdown): Perfil, Conta, Contratos, Contatos, Chat,
+Carteira (maker), Notificações, Ajuda, Sair.
+Cliente: Início, Novo pedido, Meus pedidos, Propostas e Chat, Contatos, Conta.
+Maker: Mural, Contratos, Chat, Contatos, Carteira, Perfil técnico, Conta.
+Nada de beco sem saída: todo botão leva a algum lugar; toda tela vazia tem ação.
+
+MOBILE / "APP" (para mostrar a investidores): mobile-first, barra inferior,
+PWA instalável (manifest, ícone SVG, service worker), moldura de celular no
+computador com painel explicativo. MODO APRESENTAÇÃO: tour de 6 a 8 passos;
+atalhos de persona (Cliente PF, Cliente Empresa, Maker Comercial, Maker
+Empresas); tela inicial com a proposta em 3 frases; faixa "Protótipo ilustrativo
+- dados fictícios".
+
+TESTE EM SÃO PAULO (ESTADO): dados de exemplo em cidades de SP (São Paulo,
+Campinas, Sorocaba, Ribeirão Preto, Santos, São José dos Campos, Jundiaí,
+Piracicaba, Bauru). CEP fora de SP -> "Ainda não atendemos sua região" + lista
+de espera.
+
+DADOS DE EXEMPLO: pelo menos 18 pedidos variados (empresariais recorrentes com
+ASA/PETG-CF/nylon, comerciais decorativos, pessoas só com foto e valor, pedidos
+que exigem H2D, só modelagem); alguns com 2-3 desbloqueios, outros lotados, um
+expirado; 3 conversas iniciadas; fotos como placeholders em SVG.
+
+LIMITAÇÃO: dados no navegador; cliente e maker precisam estar no mesmo aparelho
+(trocando de conta). Sincronizar entre aparelhos exige backend (Supabase).
+
+================================================================================
+8. IDEIAS ADICIONAIS
+================================================================================
+CONFIANÇA: avaliação dos dois lados após fechar; selos (Perfil verificado, Top
+Maker, Empresa verificada); garantia de lead (cliente sem resposta em 72h ->
+estorno parcial); bônus de moedas por avaliação 5 estrelas; termos, privacidade
+(LGPD), aviso de direitos autorais; denúncia de anúncio/usuário com fila de
+moderação.
+RECEITA: assinatura mensal de maker (moedas incluídas e destaque); plano
+recorrente para empresas; destaque pago de anúncio; desconto em pedidos perto
+do vencimento; indicação (moedas para quem convida); cupons.
+CLIENTE: linha do tempo do pedido; comparar propostas lado a lado; pedir de novo
+em um toque; modelos prontos para empresa; orçamento em PDF simulado; alerta se
+ninguém desbloquear em 48h.
+MAKER: painel de resultados (gasto em moedas x contratos fechados, conversão,
+retorno por moeda); filtros salvos e alertas; favoritar/ocultar; respostas
+rápidas; pausar recebimento; fila de capacidade; vitrine pública com link;
+níveis Bronze/Prata/Ouro; mapa (Leaflet + OpenStreetMap).
+PAINEL DO INVESTIDOR: admin fictício com leads, desbloqueios, receita em
+moedas, funil, ranking de cidades; simulador de receita; tela de pitch com
+mercado, concorrentes, diferencial e roadmap.
+PREVIEW 3D: upload de STL, modelo girando (three.js por CDN), cálculo de volume,
+peso, tempo e preço sugerido; calculadora do maker.
+QUALIDADE: estados de carregamento/vazio/erro; acessibilidade AA, foco visível,
+teclado; modo escuro opcional; formatos brasileiros; exportar/importar dados de
+demonstração em JSON; estrutura de dados igual às tabelas do PRD; checklist de
+testes manuais por fase.
+
+================================================================================
+9. PESQUISA DE CONCORRENTES E SEMELHANTES (pesquisa de 13/11/2026)
+================================================================================
+Resumo: não foi encontrado ninguém que faça exatamente "pagar para desbloquear
+lead + matching por material e equipamento" em impressão 3D. Fontes de
+qualidade mista; vários resultados são antigos. Verificar antes de usar em
+apresentação.
+
+BRASIL
+- Maker Market: conecta designers de modelos 3D, donos de impressoras e lojistas
+  de e-commerce; loja vende sem estoque e o pedido vai ao maker mais próximo
+  com impressora cadastrada. Fundador Éder Medeiros (criador do Melhor Envio).
+  R$ 1 milhão de investimento; reportagens de meados de 2025; planta de P&D de
+  500 m2 e impressão metálica. Modelo de cobrança NÃO encontrado. Pode haver
+  outro "Maker Market" (da Bambu Lab, ligado ao MakerWorld); não confirmado se
+  é a mesma empresa. Status atual não confirmado.
+  Fontes: startupi.com.br/maker-market-investimento-de-1-milhao/ ;
+  ahoradosul.com.br/conteudos/2025/06/22/o-objetivo-e-criar-uma-rede-nacional-de-pessoas-com-impressoras-3d/
+- Cronoshare: pedido de orçamento local genérico; até 4 profissionais entram
+  em contato. cronoshare.com.br/servicos/impressao-3d
+- Fábrica3D e Koios 3D (bureaus nacionais, citados no PRD).
+- Nenhuma empresa brasileira com job board de impressão 3D + créditos foi achada.
+
+QUADROS DE LANCES (cliente posta, makers dão lance)
+- RP Marketplace: RFQ grátis para comprador; fornecedor paga 7,5% embutido no
+  lance; pagamento em escrow. Página antiga.
+- PrintThis4Me: makers dão lance; cliente escolhe por menor preço ou nota. Antigo.
+- 3D Marketplace (demo) e Create & Forge (pré-lançamento, promete makers
+  verificados e evitar corrida para o preço mais baixo).
+
+AGREGADORES DE COTAÇÃO
+- 3DEXPERIENCE Make (Dassault): cotação instantânea; pedido para todos os
+  vendedores compatíveis; ou cotação manual para até 3 vendedores. 3ds.com/make
+- Xometry: RFQ + cotação instantânea com feedback de manufaturabilidade.
+- Hubs (ex-3D Hubs), hoje Protolabs Network: comprada pela Protolabs em 2021;
+  250+ parceiros; críticas de variação de qualidade (afirmação de concorrente).
+- Craftcloud: 150+ prestadores, cotação instantânea sem cadastro, critérios
+  rigorosos para parceiros.
+
+REDES E FAZENDAS DE IMPRESSÃO
+- 3dfabs: 211 fabs ativas, sem taxa para comprador e operador.
+- Slant 3D: fazendas próprias + API (beta 2025), centralizado.
+- Printago: software para operar fazenda de impressão, não é marketplace.
+
+MODELOS DE LEAD COM CRÉDITOS (referência de preço)
+- Bark: custo em créditos mostrado antes de responder; varia por valor do
+  trabalho e demanda; créditos expiram em 3 meses (compras desde nov/2025);
+  garantia na primeira compra. Thumbtack: preço por lead que muda com demanda.
+  Angi: créditos expiram em 6 meses. Fontes divergem em valores; verificar.
+
+O QUE EMPRESTAR: cotação instantânea sem cadastro (Craftcloud); preview e
+estimativa a partir do arquivo 3D (Xometry/Hubs); preço do lead por demanda e
+valor (Bark/Thumbtack); validade de créditos (Bark/Angi); garantia na primeira
+compra (Bark); avaliações e perfis (Cronoshare); escrow e taxa de plataforma
+(RP Marketplace, futuro); "enviar para até 3 makers" (Dassault); aprovação
+rigorosa de makers (Craftcloud, Create & Forge).
+DIFERENÇA DO MAKER3D: cliente posta qualquer necessidade (inclusive só uma foto
+e um valor); modelagem; match por material e nível de equipamento; leads pagos
+com moedas; foco local e B2B recorrente.
+
+================================================================================
+10. PLANO DO "MASTERMIND"
+================================================================================
+POSICIONAMENTO: "Mande uma foto e seja conectado ao maker certo." O cliente não
+precisa saber nada técnico; a plataforma traduz.
+
+CINCO APOSTAS PRINCIPAIS (construir primeiro)
+ 1. Foto vira pedido (IA com visão preenche categoria, material, tamanho,
+    acabamento e preço estimado; no protótipo, simulado por palavras-chave).
+ 2. Matching com explicação ("92% compatível", motivos).
+ 3. Painel de ROI do maker (moedas gastas x contratos fechados).
+ 4. Painel do investidor (funil, receita, cidades, simulador).
+ 5. Preview 3D de arquivo STL com estimativa automática.
+
+RISCOS
+- Vazamento: após o desbloqueio o negócio vai para o WhatsApp. Em contratos
+  recorrentes de empresa, perde-se a receita repetida. Mitigar: desbloqueio
+  recorrente mais caro (+50%); depois escrow/Pix, nota fiscal e "pedir de
+  novo" como motivos para ficar.
+- Maker paga antes de saber se o lead é bom: verificação de telefone do
+  cliente (código SMS/WhatsApp), nota de qualidade do lead, estorno de 72h,
+  tratamento rígido de lead inválido.
+- Filtro de chat é fácil de burlar: na versão real, regra no servidor e contato
+  mascarado; ser honesto na apresentação.
+- Moedas pré-pagas no Brasil: validar validade, arrependimento de 7 dias, nota
+  fiscal e LGPD com advogado/contador antes do lançamento.
+- Partida a frio: começar com oferta (30 a 50 makers numa região), dar o
+  desbloqueio grátis, depois trazer demanda (Instagram, vendedores do Mercado
+  Livre, empresas).
+
+RECEITA (ordem): 1) moedas de desbloqueio; 2) assinatura de maker; 3) planos
+de empresa; 4) destaque pago do pedido; 5) taxa sobre pagamentos em escrow
+(futuro).
+
+MÉTRICAS: pedidos por semana; desbloqueios por pedido (alvo 2 a 3 de 4);
+conversão desbloqueio -> fechamento; ticket médio; recompra de moedas; moedas
+por maker por mês; tempo até a primeira proposta; custo por contrato fechado
+relatado pelo maker.
+
+ROADMAP: Fase 0 protótipo atual; Fase 1 demonstração com as 5 apostas, mobile,
+PWA e Modo Apresentação (sem backend); Fase 2 MVP real (Supabase, Pix Asaas,
+cadastro verificado, uma região de SP); Fase 3 escrow, propostas, plugin de
+loja e segunda região.
+
+================================================================================
+11. DECISÕES JÁ TOMADAS
+================================================================================
+- Moedas expiram em 90 dias.
+- Teste inicial no estado de São Paulo.
+- Preço de desbloqueio é DINÂMICO (muda com demanda e outros fatores).
+- Propor nomes para a marca (feito, ver seção 12).
+- Valores do estimador de preço (seção 6).
+
+================================================================================
+12. ESTUDO DE NOME E DOMÍNIO (pesquisa de 13/11/2026)
+================================================================================
+NOMES PROPOSTOS
+ 1. Bico3D   - "bico" em português é "trabalho extra" e também "bico da impressora".
+ 2. Printou  - informal, fácil de falar e lembrar.
+ 3. PeçaCerta - descreve a promessa de conexão certa.
+ 4. Camada   - as camadas da impressão; curto.
+ 5. Fiô      - filamento e fio que conecta; difícil de achar em buscas.
+
+MÉTODO: consulta direta à base RDAP do Registro.br (registro de domínios .br).
+Controle: um domínio inexistente retornou 404, então a consulta funciona; um
+domínio registrado retornou 200. Sites verificados com acesso HTTP direto.
+
+RESULTADOS (.com.br)
+ - printou.com.br   REGISTRADO desde 21/11/2019; alterado em 09/12/2025;
+                    EXPIRA em 21/11/2026 (8 dias após a consulta); o site não
+                    carrega (parece inativo).
+ - bico3d.com.br    REGISTRADO em 10/07/2026; SITE NO AR: "Bico3D - imprima com
+                    lucro", ferramenta online para calcular preço de projetos
+                    de impressão 3D. CONFLITO DIRETO.
+ - camada3d.com.br  REGISTRADO em 26/03/2026; SITE NO AR: "Camada 3D | Da ideia
+                    à peça pronta", impressão 3D sob medida. CONFLITO DIRETO.
+ - pecacerta.com.br REGISTRADO desde 14/10/2019; o site retorna erro 404
+                    (provavelmente estacionado); atividade do titular
+                    desconhecida.
+ - printou.com      REGISTRADO (titular e uso não verificados).
+ - Fiô e outros: não consultados.
+
+BUSCA NA WEB: nenhuma empresa, site ou marca "Printou" em impressão 3D foi
+encontrada.
+
+INPI (marcas): NÃO FOI POSSÍVEL consultar. O servidor busca.inpi.gov.br recusou
+a conexão a partir deste ambiente. Uma busca na web não retornou nenhum
+registro de "Printou", mas isso não prova que o nome esteja livre.
+
+CONCLUSÃO PRELIMINAR
+ - Descartar Bico3D e Camada3D (negócios de impressão 3D ativos com o mesmo nome).
+ - Printou é a melhor opção até agora, mas o domínio .com.br pertence a alguém e
+   vence em 21/11/2026; não contar com ele. Domínios .br têm período de
+   carência antes de liberar.
+ - PeçaCerta: domínio ocupado por terceiro desde 2019; verificar quem é.
+ - Considerar nova rodada de nomes e checar domínio antes de decidir.
+
+PRÓXIMOS PASSOS (pendentes)
+ 1. Consulta manual no INPI: https://busca.inpi.gov.br/pePI/ -> Marca ->
+    Pesquisa básica. Pesquisar "Printou" por radical e variações (Printo, Print,
+    Printô) nas classes de Nice 35 (marketplace/intermediação), 40 (impressão e
+    fabricação) e 42 (plataformas de software). Repetir para o nome final.
+ 2. Conferir quem é o titular de printou.com.br e printou.com.
+ 3. Procurar uso do nome em Instagram, Google Maps e LinkedIn.
+ 4. Se o nome for aprovado, registrar a marca (INPI) e o domínio.
+ Este estudo não é parecer jurídico; confirmar com profissional de propriedade
+ intelectual antes de investir na marca.
+
+================================================================================
+13. PROMPT MESTRE: FASES E CRITÉRIOS DE ACEITE
+================================================================================
+FASES (cada uma termina com aviso e espera do OK do dono):
+ A) estrutura e menus; B) cadastros e triagem (PF/Empresa, maker); C) pedido
+    (foto, lista, texto) e sugestão de preço; D) motor de matching, preço
+    dinâmico e planos de moedas; E) negociação, propostas e notificações;
+    F) polimento, dados de exemplo, mobile/PWA, Modo Apresentação, painel do
+    investidor, preview 3D.
+REGRAS DE TRABALHO: sem deploy até o dono dizer "push"; respostas em inglês
+curto e simples (texto do site em português); economizar passos; sem
+screenshots e sem reconstruir o que já funciona; tudo que for simulação deve
+estar marcado; comentar no código o que vira servidor na versão real.
+
+CRITÉRIOS DE ACEITE
+ - Criar conta de cliente PF, cliente empresa e maker e navegar por todos os
+   menus sem erro.
+ - Cliente que envia só foto e valor recebe sugestão de preço e o pedido
+   aparece para makers compatíveis.
+ - Maker "Comercial" e maker "Empresas" veem feeds e tabelas de moedas
+   diferentes.
+ - Maker com ASA vê pedidos ASA em destaque; maker sem H2D não vê pedidos que
+   exigem H2D (ou vê bloqueado com o motivo).
+ - Os 3 primeiros contratos têm 25% de chance cada de serem de alto valor,
+   estável no dia, sempre com pedidos reais do banco.
+ - Chat com bloqueio de contato, proposta com aceite, grátis só para conta nova,
+   trava de 4 desbloqueios, validade de 90 dias e preço dinâmico funcionam.
+ - Nenhum botão morto; nenhuma tela em branco; aviso de valores estimados em
+   toda tela de preço.
+
+================================================================================
+14. PENDÊNCIAS E PERGUNTAS ABERTAS
+================================================================================
+ - Escolher o nome final (e consultar INPI).
+ - Confirmar: tarifa de energia = R$ 1,50/kWh?
+ - Confirmar preços por kg dos outros materiais (ABS, ASA, TPU, resina, CF, nylon).
+ - H2D e equipamentos avançados terão hora-máquina maior que R$ 2,00?
+ - Confirmar valores dos desbloqueios e pacotes do segmento Empresas.
+ - Quem compra o pacote mínimo perde o grátis? (assumido que sim)
+ - Verificar a situação atual do Maker Market (concorrente mais próximo).
+ - Dar o "go" para iniciar a fase A.
+================================================================================
